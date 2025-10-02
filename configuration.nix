@@ -78,6 +78,9 @@
     nfs.server.enable = true;
   };
 
+  # Ensure kernel support for network filesystems used by mounts
+  boot.supportedFilesystems = [ "nfs" ];
+
   # Docker configuration
   virtualisation.docker = {
     enable = true;
