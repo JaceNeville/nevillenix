@@ -1,0 +1,36 @@
+name: Deploy Configurations
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          hostname: gha-deploy-${{ github.run_id }}
+          targets: ${{ secrets.REMOTE_HOST }}
+
+      - name: Show Tailscale connection details
+        run: |
+          tailscale status --peers=false
+          tailscale ip -4 || true
+          tailscale ip -6 || true
+
+      - name: Deploy configuration
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo nixos-rebuild switch --flake github:${{ github.repository }}#nixos
