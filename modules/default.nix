@@ -6,6 +6,7 @@
     ./networking.nix
     ./docker.nix
     ./nfs.nix
+    ./meshSidecar.nix
     ./services
     ../users/jace.nix
   ];
