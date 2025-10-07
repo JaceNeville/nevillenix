@@ -44,3 +44,16 @@ This repository holds a modular NixOS configuration with a cleaned non-flake `co
 - NFS mounts are automounted with `_netdev` to ensure networking is up first; associated directories are declared via `systemd.tmpfiles`.
 - Track changes in git so upgrades and rollbacks stay simple.
 - `modules/default.nix` collects the shared modules, user config, and hardware profile so both entry points import the exact same stack.
+
+## Continuous Deployment
+
+The `deploy-configs` workflow connects the GitHub runner to the tailnet before rebuilding the remote host. It first authenticates to Tailscale with `tailscale/github-action@v2`, bringing the runner online as `gha-deploy-<run id>` and verifying connectivity to the target machine. After logging the active Tailscale routes for debugging, the workflow uses `appleboy/ssh-action` to trigger `nixos-rebuild switch` on the remote node.
+
+### Required secrets
+
+- `REMOTE_HOST` – The target machine's Tailscale IP or MagicDNS name.
+- `REMOTE_USER` – SSH username on the remote machine.
+- `SSH_PRIVATE_KEY` – Private key authorised for that user.
+- `TAILSCALE_AUTHKEY` – Ephemeral auth key (or OAuth client credentials) that allow the runner to join the tailnet.
+
+By joining the tailnet inside the workflow, the SSH deployment step can reliably reach private infrastructure over Tailscale without exposing the host publicly.
