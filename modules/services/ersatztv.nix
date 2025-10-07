@@ -10,7 +10,7 @@
       "/tv:/tv:ro"
     ];
     environment = {
-      TZ = "America/Chicago";
+      TZ = config.time.timeZone;
       PUID = "1000";
       PGID = "1000";
     };

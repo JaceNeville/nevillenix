@@ -1,6 +1,2 @@
-{ config, pkgs, ... }:
-{
-  imports = import ./modules/default.nix;
-
-  system.stateVersion = "23.11";
-}
+{ ... }@args:
+import ./hosts/nixos/configuration.nix args

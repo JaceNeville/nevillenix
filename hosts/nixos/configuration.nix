@@ -1,6 +1,8 @@
-{ inputs, lib, config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 {
-  imports = import ../../modules/default.nix;
+  imports = [
+    ../../modules/default.nix
+  ];
 
   # Keep original stateVersion
   system.stateVersion = "23.11";

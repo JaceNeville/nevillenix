@@ -8,6 +8,8 @@
       "/var/lib/xteve:/root/.xteve:rw"
       "/tmp/xteve:/tmp/xteve:rw"
     ];
-    environment = { TZ = "America/Chicago"; };
+    environment = {
+      TZ = config.time.timeZone;
+    };
   };
 }

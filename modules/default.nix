@@ -1,11 +1,12 @@
-[
-  ../hosts/nixos/hardware-configuration.nix
-  ./base.nix
-  ./networking.nix
-  ./docker.nix
-  ./nfs.nix
-  ./services/ersatztv.nix
-  ./services/plex.nix
-  ./services/xteve.nix
-  ../users/jace.nix
-]
+{ ... }:
+{
+  imports = [
+    ../hosts/nixos/hardware-configuration.nix
+    ./base.nix
+    ./networking.nix
+    ./docker.nix
+    ./nfs.nix
+    ./services
+    ../users/jace.nix
+  ];
+}

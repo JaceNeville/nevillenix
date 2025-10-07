@@ -1,16 +1,23 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+let
+  server = "100.99.106.71";
+  shareOptions = [ "x-systemd.automount" "noauto" "_netdev" "x-systemd.idle-timeout=600" ];
+  shares = {
+    "/tv" = "/mnt/main_pool/media/tv";
+    "/movies" = "/mnt/main_pool/media/movies";
+  };
+  mkFileSystem = mountPoint: remotePath: {
+    name = mountPoint;
+    value = {
+      device = "${server}:${remotePath}";
+      fsType = "nfs";
+      options = shareOptions;
+    };
+  };
+  fileSystems = lib.mapAttrs' mkFileSystem shares;
+in
 {
-  fileSystems."/tv" = {
-    device = "100.99.106.71:/mnt/main_pool/media/tv";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" "_netdev" "x-systemd.idle-timeout=600" ];
-  };
-
-  fileSystems."/movies" = {
-    device = "100.99.106.71:/mnt/main_pool/media/movies";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" "_netdev" "x-systemd.idle-timeout=600" ];
-  };
+  inherit fileSystems;
 
   systemd.tmpfiles.rules = [
     "d /var/lib/ersatztv 0755 root root -"
